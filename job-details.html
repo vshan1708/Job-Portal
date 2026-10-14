@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - JobPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 font-bold text-xl text-gray-900">
+                <div class="bg-blue-600 text-white p-2 rounded-lg"><i class="fa-solid fa-briefcase"></i></div>
+                <span>JobPortal</span>
+            </a>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                <a href="jobs.html" class="text-blue-600 font-bold">Jobs</a>
+                <a href="my-applications.html" class="text-gray-600 hover:text-blue-600">My Applications</a>
+                <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a>
+                <a href="faq.html" class="text-gray-600 hover:text-blue-600">FAQ</a>
+            </nav>
+            <a href="student-login.html" class="text-sm text-gray-700 hover:text-blue-600">Login</a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+        <a href="jobs.html" class="text-sm font-medium text-blue-600 hover:underline mb-6 inline-flex items-center">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Jobs
+        </a>
+
+        <div class="bg-white rounded-2xl border p-6 md:p-8 shadow-sm space-y-6">
+            <div class="flex items-start space-x-4">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl font-bold">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Cafe Assistant</h1>
+                    <p class="text-gray-500 font-medium">ABC Cafe</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y text-xs text-gray-700">
+                <div class="flex items-center"><i class="fa-solid fa-location-dot text-red-500 mr-2 text-base"></i> Bentong</div>
+                <div class="flex items-center"><i class="fa-solid fa-money-bill-wave text-green-600 mr-2 text-base"></i> RM8/hour</div>
+                <div class="flex items-center"><i class="fa-solid fa-clock text-blue-500 mr-2 text-base"></i> 5.00 PM - 10.00 PM</div>
+            </div>
+
+            <p class="text-xs text-gray-500 font-semibold">Category: <span class="text-gray-800">Food & Beverage</span></p>
+
+            <div>
+                <h3 class="font-bold text-gray-900 mb-2">Job Description</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">Assist customers and help with daily cafe operations including taking orders, serving food, and maintaining clean work areas.</p>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-gray-900 mb-2">Requirements</h3>
+                <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Minimum SPM</li>
+                    <li>Friendly and responsible</li>
+                    <li>Able to work on weekends</li>
+                </ul>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+                <a href="apply.html" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-lg text-sm transition">
+                    Apply Now
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

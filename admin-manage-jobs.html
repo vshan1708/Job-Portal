@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Jobs - Admin JobPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
+            <!-- Clickable Logo -> Admin Homepage -->
+            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block" title="Go to Admin Homepage">
+                <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
+                <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
+            </a>
+            <nav class="p-4 space-y-1 text-sm font-medium text-gray-600">
+                <a href="admin-dashboard.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
+                <a href="admin-manage-jobs.html" class="block px-4 py-2.5 rounded-lg bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-list-check mr-2"></i> Manage Jobs</a>
+                <a href="admin-applications.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-file-lines mr-2"></i> Applications</a>
+                <a href="student-job-status.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-user-graduate mr-2"></i> Student Records</a>
+                
+                <hr class="my-3 border-gray-200">
+                <!-- Direct Link Back to Student Login -->
+                <a href="student-login.html" class="block px-4 py-2.5 rounded-lg hover:bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-arrow-left-long mr-2"></i> Student Login</a>
+                <a href="student-login.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="flex-grow p-6 md:p-8">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Manage Job Listings</h1>
+                    <p class="text-xs text-gray-500">Add or remove part-time job postings.</p>
+                </div>
+                <button onclick="toggleModal(true)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg">
+                    <i class="fa-solid fa-plus mr-1"></i> Add New Job
+                </button>
+            </div>
+
+            <!-- Jobs Table -->
+            <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b text-gray-600 font-semibold">
+                            <th class="p-3">Job Title</th>
+                            <th class="p-3">Company</th>
+                            <th class="p-3">Pay Rate</th>
+                            <th class="p-3">Location</th>
+                            <th class="p-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-jobs-body" class="divide-y text-gray-700">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Adding New Job -->
+    <div id="add-job-modal" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Add New Job Listing</h3>
+            <form onsubmit="addNewJob(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">Job Title</label>
+                    <input id="job-title" type="text" required class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Company Name</label>
+                    <input id="job-company" type="text" required class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Pay Rate</label>
+                    <input id="job-pay" type="text" placeholder="e.g. RM10/hour" required class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Location</label>
+                    <input id="job-location" type="text" required class="w-full border rounded-lg p-2">
+                </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="toggleModal(false)" class="px-4 py-2 border rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Save Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function renderAdminJobs() {
+            let jobs = JSON.parse(localStorage.getItem('portal_jobs')) || [
+                { id: 1, title: 'Cafe Assistant', company: 'ABC Cafe', pay: 'RM8/hour', location: 'Bentong' },
+                { id: 2, title: 'Retail Assistant', company: 'XYZ Store', pay: 'RM10/hour', location: 'Kuala Lumpur' },
+                { id: 3, title: 'Supermarket Cashier', company: 'Fresh Mart', pay: 'RM9/hour', location: 'Bentong' }
+            ];
+            localStorage.setItem('portal_jobs', JSON.stringify(jobs));
+
+            const tbody = document.getElementById('admin-jobs-body');
+            tbody.innerHTML = '';
+            jobs.forEach((job, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3 font-semibold text-gray-900">${job.title || 'Part-Time Job'}</td>
+                        <td class="p-3">${job.company || 'Company'}</td>
+                        <td class="p-3 text-green-700 font-medium">${job.pay || 'RM10/hour'}</td>
+                        <td class="p-3">${job.location || 'Bentong'}</td>
+                        <td class="p-3"><button onclick="deleteJob(${index})" class="text-red-600 hover:underline"><i class="fa-solid fa-trash mr-1"></i>Delete</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteJob(index) {
+            let jobs = JSON.parse(localStorage.getItem('portal_jobs'));
+            jobs.splice(index, 1);
+            localStorage.setItem('portal_jobs', JSON.stringify(jobs));
+            renderAdminJobs();
+        }
+
+        function toggleModal(show) {
+            document.getElementById('add-job-modal').classList.toggle('hidden', !show);
+        }
+
+        function addNewJob(e) {
+            e.preventDefault();
+            let jobs = JSON.parse(localStorage.getItem('portal_jobs')) || [];
+            jobs.push({
+                id: Date.now(),
+                title: document.getElementById('job-title').value,
+                company: document.getElementById('job-company').value,
+                pay: document.getElementById('job-pay').value,
+                location: document.getElementById('job-location').value
+            });
+            localStorage.setItem('portal_jobs', JSON.stringify(jobs));
+            toggleModal(false);
+            renderAdminJobs();
+        }
+
+        window.onload = renderAdminJobs;
+    </script>
+</body>
+</html>
