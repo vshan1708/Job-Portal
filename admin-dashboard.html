@@ -11,7 +11,6 @@
     <div class="flex min-h-screen">
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
-            <!-- Clickable Logo -> Admin Homepage -->
             <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block" title="Go to Admin Homepage">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
                 <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
@@ -23,9 +22,8 @@
                 <a href="student-job-status.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-user-graduate mr-2"></i> Student Records</a>
                 
                 <hr class="my-3 border-gray-200">
-                <!-- Direct Link Back to Student Login -->
                 <a href="student-login.html" class="block px-4 py-2.5 rounded-lg hover:bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-arrow-left-long mr-2"></i> Student Login</a>
-                <a href="student-login.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
+                <a href="index.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
             </nav>
         </aside>
 
@@ -33,7 +31,7 @@
         <main class="flex-grow p-6 md:p-8">
             <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
-            <!-- Live Metrics Widgets -->
+            <!-- Dynamic Metrics -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
                     <p class="text-xs text-gray-500 font-medium">Total Students</p>
@@ -53,7 +51,7 @@
                 </div>
             </div>
 
-            <!-- Recent Applications Section -->
+            <!-- Live Recent Applications Section -->
             <div class="bg-white rounded-xl border shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="font-bold text-gray-800 text-lg">Recent Student Applications</h2>
@@ -83,41 +81,29 @@
                 { id: 1, name: 'Ali Rahman', matric: 'A12345', job: 'Cafe Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
                 { id: 2, name: 'Lim Wei Xuan', matric: 'A12346', job: 'Retail Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
                 { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 4, name: 'Tan Jia Wen', matric: 'A12348', job: 'Cafe Assistant', appStatus: 'Rejected', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 5, name: 'Varshan', matric: '4252000211D', job: 'Cashier', appStatus: 'Accepted', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 6, name: 'Brunta', matric: '4253001621', job: 'Waiter', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' }
+                { id: 4, name: 'Tan Jia Wen', matric: 'A12348', job: 'Cafe Assistant', appStatus: 'Rejected', jobStatus: 'Not Yet', date: '14/10/2026' }
             ];
             localStorage.setItem('portal_students', JSON.stringify(students));
 
-            let jobs = JSON.parse(localStorage.getItem('portal_jobs')) || Array(11).fill({});
-            localStorage.setItem('portal_jobs', JSON.stringify(jobs));
+            let jobs = JSON.parse(localStorage.getItem('portal_jobs')) || Array(20).fill({});
 
-            let apps = students.map(s => ({
-                id: s.id,
-                student: s.name,
-                job: s.job,
-                date: s.date || '14/10/2026',
-                status: s.appStatus
-            }));
-            localStorage.setItem('portal_apps', JSON.stringify(apps));
-
-            // Update Counts
+            // Update Counts Live
             document.getElementById('total-students-cnt').innerText = students.length;
             document.getElementById('total-jobs-cnt').innerText = jobs.length;
-            document.getElementById('total-apps-cnt').innerText = apps.length;
-            document.getElementById('pending-apps-cnt').innerText = apps.filter(a => a.status === 'Pending').length;
+            document.getElementById('total-apps-cnt').innerText = students.length;
+            document.getElementById('pending-apps-cnt').innerText = students.filter(s => s.appStatus === 'Pending').length;
 
-            // Render Table
+            // Render Recent Applications Table
             const tbody = document.getElementById('recent-apps-body');
             tbody.innerHTML = '';
-            apps.forEach(app => {
-                let badgeClass = app.status === 'Accepted' ? 'bg-green-100 text-green-800' : (app.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
+            students.forEach(app => {
+                let badgeClass = app.appStatus === 'Accepted' ? 'bg-green-100 text-green-800' : (app.appStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
                 tbody.innerHTML += `
                     <tr>
-                        <td class="p-3 font-semibold text-gray-900">${app.student}</td>
+                        <td class="p-3 font-semibold text-gray-900">${app.name}</td>
                         <td class="p-3">${app.job}</td>
-                        <td class="p-3">${app.date}</td>
-                        <td class="p-3"><span class="${badgeClass} px-2.5 py-1 rounded font-semibold">${app.status}</span></td>
+                        <td class="p-3">${app.date || '15/10/2026'}</td>
+                        <td class="p-3"><span class="${badgeClass} px-2.5 py-1 rounded font-semibold">${app.appStatus}</span></td>
                     </tr>
                 `;
             });
