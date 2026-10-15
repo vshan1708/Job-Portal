@@ -13,15 +13,21 @@
             <i class="fa-solid fa-check"></i>
         </div>
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h2>
-        <p class="text-xs text-gray-500 mb-6">Your application has been submitted. You can check the status in My Applications.</p>
+        <p class="text-xs text-gray-500 mb-6">Your application has been submitted and sent to the administrator. You can check the live status in My Applications.</p>
 
         <div class="bg-gray-50 p-4 rounded-xl text-xs space-y-2 mb-6 border text-left">
-            <div class="flex justify-between"><span class="text-gray-500">Job:</span> <span class="font-bold text-gray-800">Cafe Assistant</span></div>
-            <div class="flex justify-between"><span class="text-gray-500">Company:</span> <span class="font-bold text-gray-800">ABC Cafe</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">Job:</span> <span id="conf-job" class="font-bold text-gray-800">Cafe Assistant</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">Company:</span> <span id="conf-company" class="font-bold text-gray-800">ABC Cafe</span></div>
             <div class="flex justify-between"><span class="text-gray-500">Status:</span> <span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 font-semibold">Pending</span></div>
         </div>
 
         <a href="my-applications.html" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition">View My Applications</a>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('conf-job').innerText = urlParams.get('job') || 'Cafe Assistant';
+        document.getElementById('conf-company').innerText = urlParams.get('company') || 'ABC Cafe';
+    </script>
 </body>
 </html>
