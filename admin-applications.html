@@ -9,10 +9,8 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
     <div class="flex min-h-screen">
-        <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
-            <!-- Clickable Logo -> Admin Homepage -->
-            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block" title="Go to Admin Homepage">
+            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
                 <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
             </a>
@@ -23,9 +21,8 @@
                 <a href="student-job-status.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-user-graduate mr-2"></i> Student Records</a>
                 
                 <hr class="my-3 border-gray-200">
-                <!-- Direct Link Back to Student Login -->
                 <a href="student-login.html" class="block px-4 py-2.5 rounded-lg hover:bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-arrow-left-long mr-2"></i> Student Login</a>
-                <a href="student-login.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
+                <a href="index.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
             </nav>
         </aside>
 
@@ -54,24 +51,17 @@
     <script>
         function renderAdminApps() {
             let students = JSON.parse(localStorage.getItem('portal_students')) || [];
-            let apps = students.map(s => ({
-                id: s.id,
-                student: s.name,
-                job: s.job,
-                date: s.date || '14/10/2026',
-                status: s.appStatus
-            }));
 
             const tbody = document.getElementById('admin-apps-body');
             tbody.innerHTML = '';
-            apps.forEach((app, idx) => {
-                let badge = app.status === 'Accepted' ? 'bg-green-100 text-green-800' : (app.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
+            students.forEach((app, idx) => {
+                let badge = app.appStatus === 'Accepted' ? 'bg-green-100 text-green-800' : (app.appStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
                 tbody.innerHTML += `
                     <tr>
-                        <td class="p-3 font-semibold text-gray-900">${app.student}</td>
+                        <td class="p-3 font-semibold text-gray-900">${app.name}</td>
                         <td class="p-3">${app.job}</td>
-                        <td class="p-3">${app.date}</td>
-                        <td class="p-3"><span class="${badge} px-2.5 py-1 rounded font-semibold">${app.status}</span></td>
+                        <td class="p-3">${app.date || '15/10/2026'}</td>
+                        <td class="p-3"><span class="${badge} px-2.5 py-1 rounded font-semibold">${app.appStatus}</span></td>
                         <td class="p-3 space-x-1">
                             <button onclick="updateAppStatus(${idx}, 'Accepted')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs">Accept</button>
                             <button onclick="updateAppStatus(${idx}, 'Rejected')" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">Reject</button>
@@ -85,6 +75,7 @@
             let students = JSON.parse(localStorage.getItem('portal_students')) || [];
             if (students[idx]) {
                 students[idx].appStatus = newStatus;
+                if (newStatus === 'Accepted') students[idx].jobStatus = 'Got Job';
                 localStorage.setItem('portal_students', JSON.stringify(students));
             }
             renderAdminApps();
