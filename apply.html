@@ -9,39 +9,101 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-center py-10">
     <div class="max-w-xl mx-auto w-full bg-white p-8 rounded-2xl border shadow-sm">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Job Application</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">Job Application</h1>
+        <p id="job-title-display" class="text-xs text-blue-600 font-semibold mb-6">Applying for: Cafe Assistant (ABC Cafe)</p>
 
-        <form action="application-success.html" method="GET" class="space-y-4">
+        <form onsubmit="handleApplicationSubmit(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
-                <input type="text" placeholder="Enter your full name" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <input id="app-fullname" type="text" placeholder="Enter your full name" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
-                <input type="tel" placeholder="Enter your phone number" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Matric / IC Number</label>
+                <input id="app-matric" type="text" placeholder="e.g. 4252000211D" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
+                    <input id="app-phone" type="tel" placeholder="Enter your phone number" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
+                    <input id="app-email" type="email" placeholder="Enter your email address" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
-                <input type="email" placeholder="Enter your email address" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Available Working Day</label>
-                <select required class="w-full border rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option value="">Select day</option>
-                    <option>Weekdays (Mon - Fri)</option>
-                    <option>Weekends (Sat - Sun)</option>
-                    <option>Flexible / Any Day</option>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Available Working Days</label>
+                <select id="app-days" required class="w-full border rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="">Select day preference</option>
+                    <option value="Weekdays (Mon - Fri)">Weekdays (Mon - Fri)</option>
+                    <option value="Weekends (Sat - Sun)">Weekends (Sat - Sun)</option>
+                    <option value="Flexible / Any Day">Flexible / Any Day</option>
                 </select>
             </div>
 
             <div class="flex justify-end space-x-3 pt-4">
-                <a href="job-details.html" class="px-5 py-2.5 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</a>
-                <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">Submit</button>
+                <a href="jobs.html" class="px-5 py-2.5 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</a>
+                <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition">Submit Application</button>
             </div>
         </form>
     </div>
+
+    <script>
+        // Get job details from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentJob = urlParams.get('job') || 'Cafe Assistant';
+        const currentCompany = urlParams.get('company') || 'ABC Cafe';
+
+        document.getElementById('job-title-display').innerText = `Applying for: ${currentJob} (${currentCompany})`;
+
+        function getInitialStudents() {
+            return [
+                { id: 1, name: 'Ali Rahman', matric: 'A12345', job: 'Cafe Assistant', company: 'ABC Cafe', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
+                { id: 2, name: 'Lim Wei Xuan', matric: 'A12346', job: 'Retail Assistant', company: 'XYZ Store', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
+                { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', company: 'Fresh Mart', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' },
+                { id: 4, name: 'Tan Jia Wen', matric: 'A12348', job: 'Cafe Assistant', company: 'ABC Cafe', appStatus: 'Rejected', jobStatus: 'Not Yet', date: '14/10/2026' }
+            ];
+        }
+
+        function handleApplicationSubmit(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('app-fullname').value.trim();
+            const matric = document.getElementById('app-matric').value.trim();
+            const today = new Date().toLocaleDateString('en-GB');
+
+            let students = JSON.parse(localStorage.getItem('portal_students')) || getInitialStudents();
+
+            const newApplication = {
+                id: Date.now(),
+                name: fullName,
+                matric: matric,
+                job: currentJob,
+                company: currentCompany,
+                appStatus: 'Pending',
+                jobStatus: 'Not Yet',
+                date: today
+            };
+
+            students.unshift(newApplication); // Add to top of list
+            localStorage.setItem('portal_students', JSON.stringify(students));
+
+            // Sync with portal_apps
+            let apps = students.map(s => ({
+                id: s.id,
+                student: s.name,
+                job: s.job,
+                date: s.date || today,
+                status: s.appStatus
+            }));
+            localStorage.setItem('portal_apps', JSON.stringify(apps));
+
+            // Redirect to confirmation page
+            window.location.href = `application-success.html?job=${encodeURIComponent(currentJob)}&company=${encodeURIComponent(currentCompany)}`;
+        }
+    </script>
 </body>
 </html>
