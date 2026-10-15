@@ -9,10 +9,8 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
     <div class="flex min-h-screen">
-        <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
-            <!-- Clickable Logo -> Admin Homepage -->
-            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block" title="Go to Admin Homepage">
+            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
                 <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
             </a>
@@ -23,13 +21,11 @@
                 <a href="student-job-status.html" class="block px-4 py-2.5 rounded-lg bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-user-graduate mr-2"></i> Student Records</a>
                 
                 <hr class="my-3 border-gray-200">
-                <!-- Direct Link Back to Student Login -->
                 <a href="student-login.html" class="block px-4 py-2.5 rounded-lg hover:bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-arrow-left-long mr-2"></i> Student Login</a>
-                <a href="student-login.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
+                <a href="index.html" class="block px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</a>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-grow p-6 md:p-8">
             <div class="flex justify-between items-center mb-2">
                 <div>
@@ -38,7 +34,6 @@
                 </div>
             </div>
 
-            <!-- Action Bar -->
             <div class="bg-white p-4 rounded-xl border shadow-sm mb-6 flex justify-between items-center text-xs mt-4">
                 <div class="font-semibold text-gray-600">Total Registered Students: <span id="student-count-badge" class="text-blue-600 font-bold">0</span></div>
                 <button onclick="toggleModal(true)" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition">
@@ -46,7 +41,6 @@
                 </button>
             </div>
 
-            <!-- Student Table -->
             <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
@@ -110,20 +104,8 @@
     </div>
 
     <script>
-        function getInitialStudents() {
-            return [
-                { id: 1, name: 'Ali Rahman', matric: 'A12345', job: 'Cafe Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
-                { id: 2, name: 'Lim Wei Xuan', matric: 'A12346', job: 'Retail Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
-                { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 4, name: 'Tan Jia Wen', matric: 'A12348', job: 'Cafe Assistant', appStatus: 'Rejected', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 5, name: 'Varshan', matric: '4252000211D', job: 'Cashier', appStatus: 'Accepted', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 6, name: 'Brunta', matric: '4253001621', job: 'Waiter', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' }
-            ];
-        }
-
         function loadStudents() {
-            let students = JSON.parse(localStorage.getItem('portal_students')) || getInitialStudents();
-            localStorage.setItem('portal_students', JSON.stringify(students));
+            let students = JSON.parse(localStorage.getItem('portal_students')) || [];
 
             document.getElementById('student-count-badge').innerText = students.length;
 
@@ -145,23 +127,10 @@
                     </tr>
                 `;
             });
-
-            syncPortalApps(students);
-        }
-
-        function syncPortalApps(students) {
-            let apps = students.map(s => ({
-                id: s.id,
-                student: s.name,
-                job: s.job,
-                date: s.date || '14/10/2026',
-                status: s.appStatus
-            }));
-            localStorage.setItem('portal_apps', JSON.stringify(apps));
         }
 
         function deleteStudent(idx) {
-            let students = JSON.parse(localStorage.getItem('portal_students'));
+            let students = JSON.parse(localStorage.getItem('portal_students')) || [];
             students.splice(idx, 1);
             localStorage.setItem('portal_students', JSON.stringify(students));
             loadStudents();
@@ -173,17 +142,18 @@
 
         function addStudent(e) {
             e.preventDefault();
-            let students = JSON.parse(localStorage.getItem('portal_students')) || getInitialStudents();
+            let students = JSON.parse(localStorage.getItem('portal_students')) || [];
             const newStu = {
                 id: Date.now(),
                 name: document.getElementById('stu-name').value.trim(),
                 matric: document.getElementById('stu-matric').value.trim(),
                 job: document.getElementById('stu-job').value.trim(),
+                company: 'Partner Company',
                 appStatus: document.getElementById('stu-app-status').value,
                 jobStatus: document.getElementById('stu-job-status').value,
                 date: new Date().toLocaleDateString('en-GB')
             };
-            students.push(newStu);
+            students.unshift(newStu);
             localStorage.setItem('portal_students', JSON.stringify(students));
             toggleModal(false);
             loadStudents();
