@@ -111,18 +111,20 @@
                 return;
             }
 
-            // Save user for login authentication
+            // Save user credentials for login authentication
             users.push({ name, matric, email, pass });
             localStorage.setItem('portal_users', JSON.stringify(users));
 
-            // Sync into student admin records
+            // Sync into student admin records with 'Not Applied' appStatus
             let students = JSON.parse(localStorage.getItem('portal_students')) || [];
             students.push({
                 id: Date.now(),
                 name: name,
                 matric: matric,
+                email: email,
                 job: 'None',
-                appStatus: 'Pending',
+                company: '-',
+                appStatus: 'Not Applied',
                 jobStatus: 'Not Yet',
                 date: new Date().toLocaleDateString('en-GB')
             });
