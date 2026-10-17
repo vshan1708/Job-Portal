@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Applications - JobPortal</title>
+    <title>My Applications - Job Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2 font-bold text-xl text-gray-900">
                 <div class="bg-blue-600 text-white p-2 rounded-lg"><i class="fa-solid fa-briefcase"></i></div>
-                <span>JobPortal</span>
+                <span>Job Portal</span>
             </a>
             <nav class="hidden md:flex space-x-8 text-sm font-medium">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
@@ -45,18 +45,33 @@
         </div>
     </main>
 
+    <!-- Global Footer -->
+    <footer class="bg-white border-t py-4 text-center text-xs text-gray-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>&copy; 2026 Job Portal. All rights reserved.</p>
+            <a href="https://instagram.com/job_portal11?cplk=MW9iZ3ppYmg4ZTh5Mg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-pink-600 flex items-center space-x-1.5 font-medium transition">
+                <i class="fa-brands fa-instagram text-base text-pink-600"></i>
+                <span>@job_portal11</span>
+            </a>
+        </div>
+    </footer>
+
     <script>
         function loadMyApplications() {
-            let students = JSON.parse(localStorage.getItem('portal_students')) || [
-                { id: 1, name: 'Ali Rahman', matric: 'A12345', job: 'Cafe Assistant', company: 'ABC Cafe', appStatus: 'Accepted', date: '14/10/2026' },
-                { id: 2, name: 'Lim Wei Xuan', matric: 'A12346', job: 'Retail Assistant', company: 'XYZ Store', appStatus: 'Accepted', date: '14/10/2026' },
-                { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', company: 'Fresh Mart', appStatus: 'Pending', date: '14/10/2026' }
-            ];
+            let students = JSON.parse(localStorage.getItem('portal_students')) || [];
+
+            // Filter out profiles with no job application
+            const myApps = students.filter(s => s.job && s.job !== 'None');
 
             const tbody = document.getElementById('my-apps-body');
             tbody.innerHTML = '';
 
-            students.forEach(app => {
+            if (myApps.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-400">You haven't applied for any jobs yet. <a href="jobs.html" class="text-blue-600 underline font-semibold ml-1">Browse Jobs</a></td></tr>`;
+                return;
+            }
+
+            myApps.forEach(app => {
                 let badgeClass = app.appStatus === 'Accepted' ? 'bg-green-100 text-green-800' : (app.appStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
                 tbody.innerHTML += `
                     <tr>
