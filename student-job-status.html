@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Records - JobPortal Admin</title>
+    <title>Student Records - Admin Job Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
             <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
-                <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
+                <span class="font-bold text-gray-800 text-base">Job Portal Admin</span>
             </a>
             <nav class="p-4 space-y-1 text-sm font-medium text-gray-600">
                 <a href="admin-dashboard.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
@@ -29,8 +29,8 @@
         <main class="flex-grow p-6 md:p-8">
             <div class="flex justify-between items-center mb-2">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Student Job Status</h1>
-                    <p class="text-xs text-gray-500">View and track student records live across the portal.</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Student Records</h1>
+                    <p class="text-xs text-gray-500">View and track all registered student profiles and application statuses.</p>
                 </div>
             </div>
 
@@ -76,22 +76,23 @@
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">Job Applied</label>
-                    <input id="stu-job" type="text" placeholder="e.g. Cashier" required class="w-full border rounded-lg p-2">
+                    <input id="stu-job" type="text" placeholder="e.g. Cashier or None" required class="w-full border rounded-lg p-2">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold mb-1">Application Status</label>
                         <select id="stu-app-status" class="w-full border rounded-lg p-2 bg-white">
-                            <option value="Accepted">Accepted</option>
+                            <option value="Not Applied">Not Applied</option>
                             <option value="Pending">Pending</option>
+                            <option value="Accepted">Accepted</option>
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-semibold mb-1">Job Status</label>
                         <select id="stu-job-status" class="w-full border rounded-lg p-2 bg-white">
-                            <option value="Got Job">Got Job</option>
                             <option value="Not Yet">Not Yet</option>
+                            <option value="Got Job">Got Job</option>
                         </select>
                     </div>
                 </div>
@@ -113,16 +114,20 @@
             tbody.innerHTML = '';
             students.forEach((stu, idx) => {
                 let jobBadge = stu.jobStatus === 'Got Job' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700';
-                let appBadge = stu.appStatus === 'Accepted' ? 'text-green-600' : (stu.appStatus === 'Pending' ? 'text-yellow-600' : 'text-red-600');
+                
+                let appBadge = 'text-gray-500';
+                if (stu.appStatus === 'Accepted') appBadge = 'text-green-600 font-bold';
+                else if (stu.appStatus === 'Pending') appBadge = 'text-yellow-600 font-bold';
+                else if (stu.appStatus === 'Rejected') appBadge = 'text-red-600 font-bold';
 
                 tbody.innerHTML += `
                     <tr>
                         <td class="p-3">${idx + 1}</td>
                         <td class="p-3 font-semibold text-gray-900">${stu.name}</td>
                         <td class="p-3">${stu.matric}</td>
-                        <td class="p-3">${stu.job}</td>
-                        <td class="p-3 font-medium ${appBadge}">${stu.appStatus}</td>
-                        <td class="p-3"><span class="${jobBadge} px-2 py-0.5 rounded font-semibold">${stu.jobStatus}</span></td>
+                        <td class="p-3">${stu.job || 'None'}</td>
+                        <td class="p-3 font-medium ${appBadge}">${stu.appStatus || 'Not Applied'}</td>
+                        <td class="p-3"><span class="${jobBadge} px-2 py-0.5 rounded font-semibold">${stu.jobStatus || 'Not Yet'}</span></td>
                         <td class="p-3"><button onclick="deleteStudent(${idx})" class="text-red-600 hover:underline"><i class="fa-solid fa-trash mr-1"></i>Remove</button></td>
                     </tr>
                 `;
@@ -147,7 +152,7 @@
                 id: Date.now(),
                 name: document.getElementById('stu-name').value.trim(),
                 matric: document.getElementById('stu-matric').value.trim(),
-                job: document.getElementById('stu-job').value.trim(),
+                job: document.getElementById('stu-job').value.trim() || 'None',
                 company: 'Partner Company',
                 appStatus: document.getElementById('stu-app-status').value,
                 jobStatus: document.getElementById('stu-job-status').value,
