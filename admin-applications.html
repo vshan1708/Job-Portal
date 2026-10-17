@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applications - Admin JobPortal</title>
+    <title>Applications - Admin Job Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
             <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
-                <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
+                <span class="font-bold text-gray-800 text-base">Job Portal Admin</span>
             </a>
             <nav class="p-4 space-y-1 text-sm font-medium text-gray-600">
                 <a href="admin-dashboard.html" class="block px-4 py-2.5 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
@@ -28,13 +28,14 @@
 
         <main class="flex-grow p-6 md:p-8">
             <h1 class="text-2xl font-bold text-gray-900 mb-2">Student Job Applications</h1>
-            <p class="text-xs text-gray-500 mb-6">Review and update application status.</p>
+            <p class="text-xs text-gray-500 mb-6">Review and update student application statuses.</p>
 
             <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-gray-50 border-b text-gray-600 font-semibold">
                             <th class="p-3">Student Name</th>
+                            <th class="p-3">Matric No</th>
                             <th class="p-3">Job Applied</th>
                             <th class="p-3">Date Applied</th>
                             <th class="p-3">Status</th>
@@ -52,30 +53,42 @@
         function renderAdminApps() {
             let students = JSON.parse(localStorage.getItem('portal_students')) || [];
 
+            // Filter only students who applied for a job
+            const actualApps = students.filter(s => s.job && s.job !== 'None');
+
             const tbody = document.getElementById('admin-apps-body');
             tbody.innerHTML = '';
-            students.forEach((app, idx) => {
+
+            if (actualApps.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">No applications submitted yet.</td></tr>`;
+                return;
+            }
+
+            actualApps.forEach((app) => {
                 let badge = app.appStatus === 'Accepted' ? 'bg-green-100 text-green-800' : (app.appStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
                 tbody.innerHTML += `
                     <tr>
                         <td class="p-3 font-semibold text-gray-900">${app.name}</td>
-                        <td class="p-3">${app.job}</td>
+                        <td class="p-3">${app.matric || '-'}</td>
+                        <td class="p-3 font-medium">${app.job}</td>
                         <td class="p-3">${app.date || '15/10/2026'}</td>
                         <td class="p-3"><span class="${badge} px-2.5 py-1 rounded font-semibold">${app.appStatus}</span></td>
                         <td class="p-3 space-x-1">
-                            <button onclick="updateAppStatus(${idx}, 'Accepted')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs">Accept</button>
-                            <button onclick="updateAppStatus(${idx}, 'Rejected')" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">Reject</button>
+                            <button onclick="updateAppStatus('${app.id}', 'Accepted')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs font-medium">Accept</button>
+                            <button onclick="updateAppStatus('${app.id}', 'Rejected')" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium">Reject</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        function updateAppStatus(idx, newStatus) {
+        function updateAppStatus(id, newStatus) {
             let students = JSON.parse(localStorage.getItem('portal_students')) || [];
-            if (students[idx]) {
-                students[idx].appStatus = newStatus;
-                if (newStatus === 'Accepted') students[idx].jobStatus = 'Got Job';
+            let index = students.findIndex(s => String(s.id) === String(id));
+            if (index !== -1) {
+                students[index].appStatus = newStatus;
+                if (newStatus === 'Accepted') students[index].jobStatus = 'Got Job';
+                if (newStatus === 'Rejected') students[index].jobStatus = 'Not Yet';
                 localStorage.setItem('portal_students', JSON.stringify(students));
             }
             renderAdminApps();
