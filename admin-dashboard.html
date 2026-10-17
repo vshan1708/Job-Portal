@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - JobPortal</title>
+    <title>Admin Dashboard - Job Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,9 +11,9 @@
     <div class="flex min-h-screen">
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white border-r hidden md:block flex-shrink-0">
-            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block" title="Go to Admin Homepage">
+            <a href="admin-dashboard.html" class="p-6 border-b flex items-center space-x-2 hover:bg-gray-50 transition block">
                 <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
-                <span class="font-bold text-gray-800 text-base">JobPortal Admin</span>
+                <span class="font-bold text-gray-800 text-base">Job Portal Admin</span>
             </a>
             <nav class="p-4 space-y-1 text-sm font-medium text-gray-600">
                 <a href="admin-dashboard.html" class="block px-4 py-2.5 rounded-lg bg-blue-50 text-blue-600 font-semibold"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard</a>
@@ -34,7 +34,7 @@
             <!-- Dynamic Metrics -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
-                    <p class="text-xs text-gray-500 font-medium">Total Students</p>
+                    <p class="text-xs text-gray-500 font-medium">Total Registered Students</p>
                     <h2 id="total-students-cnt" class="text-2xl font-extrabold text-gray-800 mt-1">0</h2>
                 </div>
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
@@ -42,8 +42,8 @@
                     <h2 id="total-jobs-cnt" class="text-2xl font-extrabold text-gray-800 mt-1">0</h2>
                 </div>
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
-                    <p class="text-xs text-gray-500 font-medium">Applications</p>
-                    <h2 id="total-apps-cnt" class="text-2xl font-extrabold text-gray-800 mt-1">0</h2>
+                    <p class="text-xs text-gray-500 font-medium">Total Applications</p>
+                    <h2 id="total-apps-cnt" class="text-2xl font-extrabold text-blue-600 mt-1">0</h2>
                 </div>
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
                     <p class="text-xs text-gray-500 font-medium">Pending Applications</p>
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <!-- Live Recent Applications Section -->
+            <!-- Recent Applications Table -->
             <div class="bg-white rounded-xl border shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="font-bold text-gray-800 text-lg">Recent Student Applications</h2>
@@ -80,23 +80,32 @@
             let students = JSON.parse(localStorage.getItem('portal_students')) || [
                 { id: 1, name: 'Ali Rahman', matric: 'A12345', job: 'Cafe Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
                 { id: 2, name: 'Lim Wei Xuan', matric: 'A12346', job: 'Retail Assistant', appStatus: 'Accepted', jobStatus: 'Got Job', date: '14/10/2026' },
-                { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' },
-                { id: 4, name: 'Tan Jia Wen', matric: 'A12348', job: 'Cafe Assistant', appStatus: 'Rejected', jobStatus: 'Not Yet', date: '14/10/2026' }
+                { id: 3, name: 'Nur Aisyah', matric: 'A12347', job: 'Cashier', appStatus: 'Pending', jobStatus: 'Not Yet', date: '14/10/2026' }
             ];
             localStorage.setItem('portal_students', JSON.stringify(students));
 
             let jobs = JSON.parse(localStorage.getItem('portal_jobs')) || Array(20).fill({});
 
+            // Filter students who have actually submitted a job application
+            const actualApplications = students.filter(s => s.job && s.job !== 'None');
+            const pendingApplications = actualApplications.filter(s => s.appStatus === 'Pending');
+
             // Update Counts Live
             document.getElementById('total-students-cnt').innerText = students.length;
             document.getElementById('total-jobs-cnt').innerText = jobs.length;
-            document.getElementById('total-apps-cnt').innerText = students.length;
-            document.getElementById('pending-apps-cnt').innerText = students.filter(s => s.appStatus === 'Pending').length;
+            document.getElementById('total-apps-cnt').innerText = actualApplications.length;
+            document.getElementById('pending-apps-cnt').innerText = pendingApplications.length;
 
-            // Render Recent Applications Table
+            // Render Recent Applications Table (Only actual job applications)
             const tbody = document.getElementById('recent-apps-body');
             tbody.innerHTML = '';
-            students.forEach(app => {
+
+            if (actualApplications.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">No applications submitted yet.</td></tr>`;
+                return;
+            }
+
+            actualApplications.forEach(app => {
                 let badgeClass = app.appStatus === 'Accepted' ? 'bg-green-100 text-green-800' : (app.appStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
                 tbody.innerHTML += `
                     <tr>
